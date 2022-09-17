@@ -1,62 +1,46 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entities.Course;
-import com.example.demo.services.courseService;
+import com.example.demo.service.*;
 
 @RestController
+@CrossOrigin("*")
 public class myController {
 	
 	@Autowired
-	public courseService courseService;
+	public RefundService refundService;
 
-	@GetMapping("/home")
-	public String home() {
-		return "This is Welcome page";
+	@GetMapping("/pan/{panNo}")
+	public TreeMap<Integer, String> getRefundData(@PathVariable("panNo") String panNo) throws IOException {
+		StringBuilder sBuilder=new StringBuilder();
+		List<String>ans=new ArrayList();
+		TreeMap<Integer, String>map=new TreeMap<>();
+		IntStream.range(2000, 2023).parallel().forEach
+		(
+				i->{
+			try {
+				map.put(i,this.refundService.getRefundStatusData(panNo,i));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		}
+	);
+		
+		return map;
 	}
-	//get the courses
-	
-	@GetMapping("/courses")
-	public List<Course> getCourse()
-	{
-		return this.courseService.getCourses();
-	}
-	
-	@GetMapping("/course/{cid}")
-	public Course getCourse(@PathVariable("cid") String cid)
-	{
-		long id=Long.parseLong(cid);
-		return this.courseService.getCourseById(id);
-	}
-	@PostMapping("/course")
-	public Course addCourse(@RequestBody Course course)
-	{
-		return this.courseService.addCourse(course);
-		 
-	}
-	
-	@PutMapping("/course")
-	public Course updateCourse(@RequestBody Course course)
-	{
-		return this.courseService.updateCourse(course);
-	}
-	
-	
-	@DeleteMapping("/course/{cid}")
-	public void deltetCourse(@PathVariable("cid") String cid)
-	{
-		long id=Long.parseLong(cid);
-		 this.courseService.deleteCourse(id);
-				
-	}
+
 }
