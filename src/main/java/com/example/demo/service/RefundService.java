@@ -14,7 +14,7 @@ import com.newrelic.agent.deps.okhttp3.ResponseBody;
 @Service
 public class RefundService extends Thread{
 	
-	public static String getRefundStatusData(String pan, int year) throws IOException
+	public static String getRefundStatusData(String pan, int year, String authToken) throws IOException
 
 	{
 		OkHttpClient client = new OkHttpClient().newBuilder()
@@ -36,7 +36,7 @@ public class RefundService extends Thread{
 				  .addHeader("Accept-Language", "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7")
 				  .addHeader("Connection", "keep-alive")
 				  .addHeader("Content-Type", "application/json")
-				  .addHeader("Cookie", "AuthToken=34fe484423ac42ce8f18e1df5e003697")
+				  .addHeader("Cookie", authToken)
 				  .addHeader("Origin", "https://eportal.incometax.gov.in")
 				  .addHeader("sn", "NA")
 				  .build();
